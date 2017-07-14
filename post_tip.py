@@ -5,21 +5,32 @@ import os
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.image import MIMEImage 
+import logging
+import time
 class SendEmail:
+
+	
+	
 	def main(self):
 		sender = '1192395260@qq.com'
-		receiver = 'liuq_1995@163.com'
+		receiver = 'lei.z@njupt.edu.cn'
 		subject = 'python email test'
 		smtpserver = 'smtp.qq.com'
 		username = '1192395260@qq.com'
-		password = 'lpwyyjeapiczgchd'
+		password = 'peyomxkrntlyfjed'
 
 		msgRoot = MIMEMultipart('related')
-		msgRoot['Subject'] = 'test message' 
+		msgRoot['Subject'] = ' message from Arduino' 
 
-		cartella = "E:\\img"
+		cartella = '/mnt/sda2/webcam/'
 		os.chdir(cartella)
-
+		logging.basicConfig(level=logging.DEBUG,  
+                    format='%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s',  
+                    datefmt='%a, %d %b %Y %H:%M:%S',  
+                    filename='/mnt/sda2/pgm/camera.log',  
+                    filemode='w')
+		
+		
 		filelist = os.listdir(os.getcwd())
 		filelist = filter(lambda x: not os.path.isdir(x),filelist)
 
@@ -28,15 +39,23 @@ class SendEmail:
 
 		att = MIMEText(open(path_img, 'rb').read(), 'base64', 'utf-8')
 		att["Content-Type"] = 'application/octet-stream'
-		att["Content-Disposition"] = 'attachment; filename=camera_from_PC.jpg'
+		att["Content-Disposition"] = 'attachment; filename=camera_from_ArduinoYUN.jpg'
 		msgRoot.attach(att) 
-
+		
+		
 		try:
 			smtp = smtplib.SMTP_SSL("smtp.qq.com",465)
 			smtp.login(username, password)
+			
 			smtp.sendmail(sender, receiver, msgRoot.as_string())
 			smtp.quit()
-			print "Success!"
+			logging.info('Success to 5min  lei.z@njupt.edu.cn')
+			print "Success"
+			
 		except smtplib.SMTPException,e:
 			print "Failed,%s"%e
+			logging.error("error to 5min  lei.z@njupt.edu.cn")
+		
+		
+			
 
